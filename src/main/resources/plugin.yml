@@ -1,0 +1,4 @@
+name: T_Economy
+version: '${project.version}'
+main: com.thgplugins.economy.EconomyPlugin
+api-version: 1.17
