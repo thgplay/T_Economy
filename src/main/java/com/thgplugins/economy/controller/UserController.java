@@ -46,7 +46,13 @@ public class UserController implements IController {
     @NotNull
     public CompletableFuture<Optional<User>> fetch(String name){
         var future = new CompletableFuture<Optional<User>>();
-        this.cache.fetch(name).ifPresentOrElse(user -> future.complete(Optional.of(user)), () -> this.repository.fetch(name).thenAccept(future::complete));
+        this.cache.fetch(name).ifPresentOrElse(user -> future.complete(Optional.of(user)), () -> {
+            this.repository.fetch(name).thenAccept(opt -> {
+                opt.ifPresent(user -> this.cache.put(user));
+                future.complete(opt);
+            });
+
+        });
         return future;
     }
 
